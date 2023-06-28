@@ -1,0 +1,13 @@
+{
+    "name": "philipptrenz/kirby-teleinfo",
+    "description": "Diagnostics API for Kirby",
+    "type": "kirby-plugin",
+    "license": "Commercial",
+    "authors": [
+        {
+            "name": "Philipp Trenz",
+            "email": "mail@philipptrenz.de"
+        }
+    ],
+    "minimum-stability": "beta"
+}
