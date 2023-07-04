@@ -2,6 +2,8 @@
 
 A diagnostics API for Kirby
 
+**Requires Kirby version >=3.8**
+
 ## Install
 
 1. Add this repository to your Kirby installation:
