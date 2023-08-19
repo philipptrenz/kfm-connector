@@ -1,18 +1,28 @@
-# kirby-teleinfo
+# Kirby Fleet Manager Plugin
 
-A diagnostics API for Kirby
+This is the official Kirby plugin to connect your website to the [Kirby Fleet Manager](https://github.com/philipptrenz/kirby-fleet-manager).
 
-**Requires Kirby version >=3.8**
+## Installation
 
-## Install
+### Download
 
-1. Add this repository to your Kirby installation:
+Download and copy this repository to `/site/plugins/kirby-fleet-manager-connector`.
 
-```bash
-git submodule add https://github.com/philipptrenz/kirby-teleinfo.git site/plugins/kirby-teleinfo
+### Git submodule
+
+```
+git submodule add philipptrenz/kirby-fleet-manager-connector.git site/plugins/kirby-fleet-manager-connector
 ```
 
-2. Add an access token to `site/config/config.php`:
+### Composer
+
+```
+composer require philipptrenz/kirby-fleet-manager-connector
+```
+
+## Setup
+
+Add your access token to `site/config/config.php`:
 
 ```php
 <?php
@@ -21,7 +31,7 @@ return [
 
     # ...
 
-    'philipptrenz.kirby-teleinfo' => [
+    'philipptrenz.kirby-fleet-manager-connector' => [
         'token' => '<secret_token>'
     ],
 
@@ -29,3 +39,11 @@ return [
     # ...
 ];
 ```
+
+## License
+
+Proprietary
+
+## Credits
+
+- [Philipp Trenz](https://github.com/philipptrenz)

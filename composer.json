@@ -1,13 +1,30 @@
 {
-    "name": "philipptrenz/kirby-teleinfo",
-    "description": "Diagnostics API for Kirby",
-    "type": "kirby-plugin",
-    "license": "Commercial",
-    "authors": [
-        {
-            "name": "Philipp Trenz",
-            "email": "mail@philipptrenz.de"
-        }
-    ],
-    "minimum-stability": "beta"
+	"name": "philipptrenz/kirby-fleet-manager-connector",
+	"description": "Keep track of all your Kirby websites within a single tool.",
+	"license": "proprietary",
+	"type": "kirby-plugin",
+	"version": "1.0.0",
+	"authors": [
+		{
+			"name": "Philipp Trenz",
+			"email": "mail@philipptrenz.de"
+		}
+	],
+	"require": {
+		"getkirby/composer-installer": "^1.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"PhilippTrenz\\": "src/"
+		}
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"allow-plugins": {
+			"getkirby/composer-installer": true
+		}
+	},
+	"require-dev": {
+		"getkirby/cms": "^3.8"
+	}
 }

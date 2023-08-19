@@ -1,21 +1,18 @@
 <?php
 
+@include_once __DIR__ . '/vendor/autoload.php';
+
 use Kirby\Cms\App;
 
-Kirby::plugin('philipptrenz/kirby-teleinfo', [
+Kirby::plugin('philipptrenz/kirby-fleet-manager-connector', [
 
-    /* 
-     * Kirby versions can be fetched via https://assets.getkirby.com/security.json
-     * Following states exist: latest, no-vulnerabilities, active-support, security-support, end-of-life
-     */
-
-    'routes' => [
+	'routes' => [
         [
             'pattern' => 'teleinfo',
             'method' => 'POST',
             'action'  => function () {
                 $token = get('token');
-                if ($token !== option('philipptrenz.kirby-teleinfo.token')) {
+                if ($token !== option('philipptrenz.kirby-fleet-manager-connector.token')) {
                     return new Response([
                         'code' => 401,
                         'message' => 'Not authorized'
@@ -77,4 +74,5 @@ Kirby::plugin('philipptrenz/kirby-teleinfo', [
             }
         ]
     ],
+
 ]);
