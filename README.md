@@ -1,6 +1,6 @@
-# Kirby Fleet Manager Plugin
+# Kirby Fleet Manager Connector
 
-This is the official Kirby plugin to connect your website to the [Kirby Fleet Manager](https://github.com/philipptrenz/kirby-fleet-manager).
+This is the official Kirby plugin to connect your [Kirby](https://getkirby.com) website to the [Kirby Fleet Manager](https://github.com/philipptrenz/kirby-fleet-manager).
 
 ## Installation
 
