@@ -32,7 +32,7 @@ return [
     # ...
 
     'philipptrenz.kirby-fleet-manager-connector' => [
-        'token' => '<secret_token>'
+        'issuer' => 'http://localhost:8000',  // url to kirby fleet manager instance
     ],
 
 
