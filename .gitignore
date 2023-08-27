@@ -3,9 +3,6 @@
 *.cache
 .idea
 
-# dev dependencies
-kirby
-
 # files of Composer dependencies that are not needed for the plugin
 /vendor/**/.*
 /vendor/**/*.json
