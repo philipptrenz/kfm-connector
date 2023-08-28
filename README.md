@@ -44,6 +44,6 @@ return [
 
 Proprietary
 
-## Credits
+---
 
-- [Philipp Trenz](https://github.com/philipptrenz)
+© 2023 Philipp Trenz
