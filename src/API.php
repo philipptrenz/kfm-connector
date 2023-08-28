@@ -27,6 +27,7 @@ final class API {
     private Cache $cache;
 
     private string $issuer;
+    private string $jwksUrl;
     private int $jwksCacheDuration;
 
     public function __construct() {
@@ -35,20 +36,21 @@ final class API {
         $this->cache   = $this->kirby->cache('philipptrenz.kirby-fleet-manager-connector');
 
         $this->issuer            = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer');
+        $this->jwksUrl           = rtrim($this->issuer, '/') . '/jwks';
         $this->jwksCacheDuration = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.jwksCacheDuration', 60*24*3);
     }
 
-    private function getJwks($ignoreCache=false): array|null
+    private function invalidateJwksCache()
     {
-        if ($ignoreCache) $this->cache->remove('jwks');
+        $this->cache->remove('jwks');
+    }
 
-        $issuer = $this->issuer;
-        $jwksCache = $this->cache->getOrSet('jwks', function() use ($issuer) {
+    private function getJwks(): array|null
+    {
+        $jwksUrl = $this->jwksUrl;
+        $jwksCache = $this->cache->getOrSet('jwks', function() use ($jwksUrl) {
             // Fetch JWKS
-            $jwksUrl = rtrim($issuer, '/') . '/jwks';
-            $response = Remote::get($jwksUrl);
-            return $response->json();
-
+            return Remote::get($jwksUrl)->json();
         }, $this->jwksCacheDuration);
 
         return $jwksCache;
@@ -87,8 +89,8 @@ final class API {
 
             if ($retry === false) {  // prevent recursion
                 // if key ID is missing in JWKS, the cached JWKS might be outdated
-                // therefore, force cache update and validate again
-                $this->getJwks(true);
+                // therefore, invalidate JWKS cache and validate again
+                $this->invalidateJwksCache();
                 return $this->isJWTValid($jwt, $audience, true);
             }
 
