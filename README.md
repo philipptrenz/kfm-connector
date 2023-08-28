@@ -22,7 +22,7 @@ composer require philipptrenz/kirby-fleet-manager-connector
 
 ## Setup
 
-Add your access token to `site/config/config.php`:
+Add the base url to your Kirby Fleet Manager instance as issuer to `site/config/config.php` (make sure to use a secure SSL connection):
 
 ```php
 <?php
@@ -32,7 +32,7 @@ return [
     # ...
 
     'philipptrenz.kirby-fleet-manager-connector' => [
-        'issuer' => 'http://localhost:8000',  // url to kirby fleet manager instance
+        'issuer' => 'https://example.com',
     ],
 
 
