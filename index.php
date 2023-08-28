@@ -3,7 +3,7 @@
 @include_once __DIR__ . '/vendor/autoload.php';
 
 use Kirby\Cms\App;
-use PhilippTrenz\KFMConnector\API;
+use PhilippTrenz\KFMConnector\RequestHandler;
 
 
 App::plugin('philipptrenz/kirby-fleet-manager-connector', [
@@ -16,7 +16,7 @@ App::plugin('philipptrenz/kirby-fleet-manager-connector', [
             'pattern' => 'kfm-api/v1',
             'method' => 'GET',
             'action'  => function() {
-                return (new Api)->handleRequest();
+                return RequestHandler::process();
             },
         ]
     ],

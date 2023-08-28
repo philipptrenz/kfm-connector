@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhilippTrenz\KFMConnector;
 
@@ -20,7 +20,7 @@ use Firebase\JWT\SignatureInvalidException;
 
 JWT::$leeway = 60;  // in seconds
 
-final class API {
+final class RequestHandler {
 
     private App $kirby;
     private Request $request;
@@ -99,7 +99,7 @@ final class API {
         return $payload->iss === $this->issuer && $payload->aud === $audience;
     }
 
-    private function isAuthorized(): bool 
+    public function isAuthorized(): bool 
     {   
         if ($authHeader = $this->request->header('Authorization')) {
             $jwt = str_replace('Bearer ', '', $authHeader);
@@ -109,9 +109,9 @@ final class API {
         return false;
     }
 
-    public function handleRequest(): Response 
+    public static function process(): Response 
     {
-        if ($this->isAuthorized() === false) {
+        if ((new RequestHandler)->isAuthorized() === false) {
             return new Response([
                 'code' => 401,
                 'message' => 'Not authorized'
