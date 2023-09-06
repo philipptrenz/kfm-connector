@@ -35,9 +35,14 @@ return [
         'issuer' => 'https://example.com',
     ],
 
-
     # ...
 ];
+```
+
+## Test
+
+```bash
+./vendor/bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests/suites
 ```
 
 ## License

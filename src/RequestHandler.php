@@ -22,46 +22,72 @@ JWT::$leeway = 60;  // in seconds
 
 final class RequestHandler {
 
-    private App $kirby;
-    private Request $request;
+    public static string $JWKS_CACHE_KEY = 'jwks';
+
     private Cache $cache;
 
+    private string $audience;
     private string $issuer;
     private string $jwksUrl;
     private int $jwksCacheDuration;
 
-    public function __construct() {
-        $this->kirby   = App::instance();
-        $this->request = $this->kirby->request();
-        $this->cache   = $this->kirby->cache('philipptrenz.kirby-fleet-manager-connector');
+    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null) {
+        $this->cache             = $cache;
+        $this->audience          = $audience;
+        $this->issuer            = $issuer;
+        $this->jwksUrl           = rtrim($this->issuer, '/') . '/api/jwks';
+        $this->jwksCacheDuration = $jwksCacheDuration ?? 60*24*3;  // fallback: 3 days
+    }
 
-        $this->issuer            = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer');
-        $this->jwksUrl           = rtrim($this->issuer, '/') . '/jwks';
-        $this->jwksCacheDuration = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.jwksCacheDuration', 60*24*3);
+    public function getAudience() : string 
+    {
+        return $this->audience;
+    }
+
+    public function getIssuer() : string 
+    {
+        return $this->issuer;
+    }
+
+    public function getJwksUrl() : string 
+    {
+        return $this->jwksUrl;
+    }
+
+    public function getJwksCacheDuration() : int
+    {
+        return $this->jwksCacheDuration;
     }
 
     private function invalidateJwksCache()
     {
-        $this->cache->remove('jwks');
+        $this->cache->remove(self::$JWKS_CACHE_KEY);
     }
 
     private function getJwks(): array|null
     {
         $jwksUrl = $this->jwksUrl;
-        $jwksCache = $this->cache->getOrSet('jwks', function() use ($jwksUrl) {
+        $jwksCache = $this->cache->getOrSet(self::$JWKS_CACHE_KEY, function() use ($jwksUrl) {
             // Fetch JWKS
-            return Remote::get($jwksUrl)->json();
+            return Remote::get($jwksUrl, [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+            ])->json();
         }, $this->jwksCacheDuration);
 
         return $jwksCache;
     }
 
-    private function isJWTValid(string $jwt, string $audience, bool $retry = false): bool
+    private function isJWTValid(string $jwt, bool $isRetry = false): bool
     {   
-        
+        $audience = $this->audience;
         try {
             $jwks = $this->getJwks();  // ignore cache on retry
             $payload = JWT::decode($jwt, JWK::parseKeySet($jwks));
+            $isAuthorized = $payload->iss === $this->issuer && $payload->aud === $audience;
+
+            return $isAuthorized;
         } catch (InvalidArgumentException $e) {
             // provided key/key-array is empty or malformed.
             return false;
@@ -87,31 +113,41 @@ final class RequestHandler {
             // provided JWT algorithm does not match provided key OR
             // provided key ID in key/key-array is empty or invalid.
 
-            if ($retry === false) {  // prevent recursion
+            if ($isRetry === false) {  // prevent recursion loop
                 // if key ID is missing in JWKS, the cached JWKS might be outdated
                 // therefore, invalidate JWKS cache and validate again
+
+                // TODO: Limit number of retries per time unit
+
                 $this->invalidateJwksCache();
-                return $this->isJWTValid($jwt, $audience, true);
+                return $this->isJWTValid($jwt, true);
             }
 
             return false;
         }
-        return $payload->iss === $this->issuer && $payload->aud === $audience;
     }
 
-    public function isAuthorized(): bool 
-    {   
-        if ($authHeader = $this->request->header('Authorization')) {
+    public function isAuthorized(Request $request, bool $autorefreshJwksCache=true): bool 
+    {
+        if ($authHeader = $request->header('Authorization')) {
             $jwt = str_replace('Bearer ', '', $authHeader);
-            $audience = $this->kirby->site()->url();
-            return $this->isJWTValid($jwt, $audience) === true;
+            return $this->isJWTValid($jwt, !$autorefreshJwksCache) === true;
         }
         return false;
     }
 
     public static function process(): Response 
     {
-        if ((new RequestHandler)->isAuthorized() === false) {
+        $kirby         = App::instance();
+        $cache         = $kirby->cache('philipptrenz.kirby-fleet-manager-connector');
+        $audience      = $kirby->site()->url();
+        $issuer        = $kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer', null);
+        $cacheDuration = $kirby->option('philipptrenz.kirby-fleet-manager-connector.jwksCacheDuration', null);
+
+        $request = $kirby->request();
+        
+        $handler = new RequestHandler($cache, $audience, $issuer, $cacheDuration);
+        if ($issuer === null || $handler->isAuthorized($request) !== true) {
             return new Response([
                 'code' => 401,
                 'message' => 'Not authorized'
