@@ -3,61 +3,85 @@
 namespace PhilippTrenz\KFMConnector;
 
 use Kirby\Cms\App;
+use Kirby\Cms\System;
 
+/**
+ * Retrieve Status of Kirby instance
+ * @author Philipp Trenz
+ * @copyright (c) 2023
+ */
 final class KirbyStatus {
 
     private App $kirby;
-    public function __construct(App $kirby=null) {
+
+    /**
+     * Constructor
+     * @param \Kirby\Cms\App|null $kirby
+     */
+    public function __construct(App|null $kirby=null) {
         $this->kirby = $kirby ?? App::instance();
     }
 
-    private function getPlugins($system, $exceptions): array
+    /**
+     * Get plugin information
+     * @param \Kirby\Cms\System $system
+     * @return array
+     */
+    private function getPlugins(System $system): array
     {
-        return $system->plugins()->values(function ($plugin) use (&$exceptions) {
+        return $system->plugins()->values(function ($plugin) {
             $authors       = $plugin->authorsNames();
             $updateStatus  = $plugin->updateStatus();
             $version       = $plugin->version() ?? null;
             $latestVersion = $updateStatus?->toArray()['latestVersion'] ?? null;
 
-            if ($latestVersion == '?') $latestVersion = null;
-            if ($updateStatus !== null) {
-                $exceptions = array_merge($exceptions, $updateStatus->exceptionMessages());
-            }
-
-            return [
+            $plugin = [
                 'author'        => empty($authors) ? null : $authors,
                 'license'       => $plugin->license() ?? null,
                 'link'          => $plugin->link() ?? null,
                 'name'          => $plugin->name() ?? null,
-                'version'       => $version,
-                'latestVersion' => $latestVersion
+                'version'       => $version
             ];
-        });
-    } 
 
+            $latestVersion = $updateStatus?->toArray()['latestVersion'] ?? null;
+            if ($latestVersion != '?') $plugin['latestVersion'] = $latestVersion;
+
+            return $plugin;
+        });
+    }
+
+    /**
+     * Get system information
+     * @param \Kirby\Cms\System $system
+     * @return array
+     */
+    private function getSystem(System $system) : array
+    {
+        return [
+            'environment' => [
+                'license' => $system->license(),
+                'version' => $this->kirby->version(),
+                'php' => phpversion(),
+                'server' => $system->serverSoftware() ?? null
+            ],
+            'security' => [
+                'debug' => $this->kirby->option('debug', false) === true,
+                'https' => $this->kirby->environment()->https() === true,
+            ],
+            'plugins' => $this->getPlugins($system),
+        ];
+    }
+
+    /**
+     * Retrieve status of Kirby instance
+     * @return array
+     */
     public function getStatus(): array
     {
-        $system       = $this->kirby->system();
-        $updateStatus = $system->updateStatus();
-        $license      = $system->license();
-        $exceptions   = $updateStatus?->exceptionMessages() ?? [];
-
         return [
-            'url' => site()->url(),
+            'url' => $this->kirby->site()->url(),
             'users' => $this->kirby->users()->count(),
-            'system' => [
-                'environment' => [
-                    'license' => $license,
-                    'version' => $this->kirby->version(),
-                    'php' => phpversion(),
-                    'server' => $system->serverSoftware() ?? null
-                ],
-                'security' => [
-                    'debug' => $this->kirby->option('debug', false) === true,
-                    'https' => $this->kirby->environment()->https() === true,
-                ],
-                'plugins' => $this->getPlugins($system, $exceptions),
-            ]
+            'system' => $this->getSystem($this->kirby->system())
         ];
     }
 

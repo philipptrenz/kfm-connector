@@ -90,8 +90,7 @@ final class KirbyStatusTest extends TestCase
                 "license",
                 "link",
                 "name",
-                "version",
-                "latestVersion"
+                "version"
               ]
             }
           ]
