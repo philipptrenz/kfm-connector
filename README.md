@@ -6,7 +6,7 @@ This is the official Kirby plugin to connect your [Kirby](https://getkirby.com) 
 
 ### Download
 
-Download and copy this repository to `/site/plugins/kirby-fleet-manager-connector`.
+Download and copy this repository to `/site/plugins/kfm-connector`.
 
 ### Git submodule
 
@@ -32,7 +32,7 @@ return [
     # ...
 
     'philipptrenz.kirby-fleet-manager-connector' => [
-        'issuer' => 'https://example.com',
+        'issuer' => 'https://my-kirby-fleet-manager-instance.com',
     ],
 
     # ...
@@ -47,7 +47,7 @@ return [
 
 ## License
 
-Proprietary
+MIT
 
 ---
 
