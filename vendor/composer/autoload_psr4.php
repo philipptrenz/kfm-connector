@@ -6,7 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Swaggest\\JsonSchema\\' => array($vendorDir . '/swaggest/json-schema/src'),
+    'Swaggest\\JsonDiff\\' => array($vendorDir . '/swaggest/json-diff/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'PhpLang\\' => array($vendorDir . '/phplang/scope-exit/src'),
     'PhilippTrenz\\KFMConnector\\' => array($baseDir . '/src'),
     'Kirby\\' => array($vendorDir . '/getkirby/composer-installer/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),

@@ -4,7 +4,7 @@ namespace PhilippTrenz\KFMConnector;
 
 use Kirby\Cms\App;
 
-final class Status {
+final class KirbyStatus {
 
     private App $kirby;
     public function __construct(App $kirby=null) {
@@ -40,7 +40,7 @@ final class Status {
         $system       = $this->kirby->system();
         $updateStatus = $system->updateStatus();
         $license      = $system->license();
-        $exceptions = $updateStatus?->exceptionMessages() ?? [];
+        $exceptions   = $updateStatus?->exceptionMessages() ?? [];
 
         return [
             'url' => site()->url(),

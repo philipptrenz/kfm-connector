@@ -8,13 +8,21 @@ class ComposerStaticInit08e123fca3da1db1dbe261590e0ae2eb
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Swaggest\\JsonSchema\\' => 20,
+            'Swaggest\\JsonDiff\\' => 18,
+        ),
         'P' => 
         array (
             'PhpParser\\' => 10,
+            'PhpLang\\' => 8,
             'PhilippTrenz\\KFMConnector\\' => 26,
         ),
         'K' => 
@@ -32,9 +40,25 @@ class ComposerStaticInit08e123fca3da1db1dbe261590e0ae2eb
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Swaggest\\JsonSchema\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/swaggest/json-schema/src',
+        ),
+        'Swaggest\\JsonDiff\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/swaggest/json-diff/src',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'PhpLang\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phplang/scope-exit/src',
         ),
         'PhilippTrenz\\KFMConnector\\' => 
         array (
@@ -1017,8 +1041,11 @@ class ComposerStaticInit08e123fca3da1db1dbe261590e0ae2eb
         'PharIo\\Version\\VersionConstraintParser' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintParser.php',
         'PharIo\\Version\\VersionConstraintValue' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintValue.php',
         'PharIo\\Version\\VersionNumber' => __DIR__ . '/..' . '/phar-io/version/src/VersionNumber.php',
+        'PhilippTrenz\\KFMConnector\\JwksException' => __DIR__ . '/../..' . '/src/JwksException.php',
+        'PhilippTrenz\\KFMConnector\\JwtCertificate' => __DIR__ . '/../..' . '/src/JwtCertificate.php',
+        'PhilippTrenz\\KFMConnector\\KirbyStatus' => __DIR__ . '/../..' . '/src/KirbyStatus.php',
         'PhilippTrenz\\KFMConnector\\RequestHandler' => __DIR__ . '/../..' . '/src/RequestHandler.php',
-        'PhilippTrenz\\KFMConnector\\Status' => __DIR__ . '/../..' . '/src/Status.php',
+        'PhpLang\\ScopeExit' => __DIR__ . '/..' . '/phplang/scope-exit/src/ScopeExit.php',
         'PhpParser\\Builder' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Builder.php',
         'PhpParser\\BuilderFactory' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/BuilderFactory.php',
         'PhpParser\\BuilderHelpers' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/BuilderHelpers.php',
@@ -1472,6 +1499,82 @@ class ComposerStaticInit08e123fca3da1db1dbe261590e0ae2eb
         'SebastianBergmann\\Type\\UnknownType' => __DIR__ . '/..' . '/sebastian/type/src/type/UnknownType.php',
         'SebastianBergmann\\Type\\VoidType' => __DIR__ . '/..' . '/sebastian/type/src/type/VoidType.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'Swaggest\\JsonDiff\\Exception' => __DIR__ . '/..' . '/swaggest/json-diff/src/Exception.php',
+        'Swaggest\\JsonDiff\\InvalidFieldTypeException' => __DIR__ . '/..' . '/swaggest/json-diff/src/InvalidFieldTypeException.php',
+        'Swaggest\\JsonDiff\\JsonDiff' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonDiff.php',
+        'Swaggest\\JsonDiff\\JsonHash' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonHash.php',
+        'Swaggest\\JsonDiff\\JsonMergePatch' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonMergePatch.php',
+        'Swaggest\\JsonDiff\\JsonPatch' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Add' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Add.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Copy' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Copy.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Move' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Move.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\OpPath' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/OpPath.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\OpPathFrom' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/OpPathFrom.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\OpPathValue' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/OpPathValue.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Remove' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Remove.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Replace' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Replace.php',
+        'Swaggest\\JsonDiff\\JsonPatch\\Test' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPatch/Test.php',
+        'Swaggest\\JsonDiff\\JsonPointer' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPointer.php',
+        'Swaggest\\JsonDiff\\JsonPointerException' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonPointerException.php',
+        'Swaggest\\JsonDiff\\JsonValueReplace' => __DIR__ . '/..' . '/swaggest/json-diff/src/JsonValueReplace.php',
+        'Swaggest\\JsonDiff\\MissingFieldException' => __DIR__ . '/..' . '/swaggest/json-diff/src/MissingFieldException.php',
+        'Swaggest\\JsonDiff\\ModifiedPathDiff' => __DIR__ . '/..' . '/swaggest/json-diff/src/ModifiedPathDiff.php',
+        'Swaggest\\JsonDiff\\PatchTestOperationFailedException' => __DIR__ . '/..' . '/swaggest/json-diff/src/PatchTestOperationFailedException.php',
+        'Swaggest\\JsonDiff\\PathException' => __DIR__ . '/..' . '/swaggest/json-diff/src/PathException.php',
+        'Swaggest\\JsonDiff\\UnknownOperationException' => __DIR__ . '/..' . '/swaggest/json-diff/src/UnknownOperationException.php',
+        'Swaggest\\JsonSchema\\Constraint\\Constraint' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Constraint.php',
+        'Swaggest\\JsonSchema\\Constraint\\Content' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Content.php',
+        'Swaggest\\JsonSchema\\Constraint\\Format' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Format.php',
+        'Swaggest\\JsonSchema\\Constraint\\Format\\IdnHostname' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Format/IdnHostname.php',
+        'Swaggest\\JsonSchema\\Constraint\\Format\\Iri' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Format/Iri.php',
+        'Swaggest\\JsonSchema\\Constraint\\Format\\Uri' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Format/Uri.php',
+        'Swaggest\\JsonSchema\\Constraint\\Properties' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Properties.php',
+        'Swaggest\\JsonSchema\\Constraint\\Ref' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Ref.php',
+        'Swaggest\\JsonSchema\\Constraint\\Type' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/Type.php',
+        'Swaggest\\JsonSchema\\Constraint\\UniqueItems' => __DIR__ . '/..' . '/swaggest/json-schema/src/Constraint/UniqueItems.php',
+        'Swaggest\\JsonSchema\\Context' => __DIR__ . '/..' . '/swaggest/json-schema/src/Context.php',
+        'Swaggest\\JsonSchema\\DataPreProcessor' => __DIR__ . '/..' . '/swaggest/json-schema/src/DataPreProcessor.php',
+        'Swaggest\\JsonSchema\\Exception' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception.php',
+        'Swaggest\\JsonSchema\\Exception\\ArrayException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/ArrayException.php',
+        'Swaggest\\JsonSchema\\Exception\\ConstException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/ConstException.php',
+        'Swaggest\\JsonSchema\\Exception\\ContentException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/ContentException.php',
+        'Swaggest\\JsonSchema\\Exception\\EnumException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/EnumException.php',
+        'Swaggest\\JsonSchema\\Exception\\Error' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/Error.php',
+        'Swaggest\\JsonSchema\\Exception\\LogicException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/LogicException.php',
+        'Swaggest\\JsonSchema\\Exception\\NumericException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/NumericException.php',
+        'Swaggest\\JsonSchema\\Exception\\ObjectException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/ObjectException.php',
+        'Swaggest\\JsonSchema\\Exception\\StringException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/StringException.php',
+        'Swaggest\\JsonSchema\\Exception\\TypeException' => __DIR__ . '/..' . '/swaggest/json-schema/src/Exception/TypeException.php',
+        'Swaggest\\JsonSchema\\HasDefault' => __DIR__ . '/..' . '/swaggest/json-schema/src/HasDefault.php',
+        'Swaggest\\JsonSchema\\Helper' => __DIR__ . '/..' . '/swaggest/json-schema/src/Helper.php',
+        'Swaggest\\JsonSchema\\InvalidRef' => __DIR__ . '/..' . '/swaggest/json-schema/src/InvalidRef.php',
+        'Swaggest\\JsonSchema\\InvalidValue' => __DIR__ . '/..' . '/swaggest/json-schema/src/InvalidValue.php',
+        'Swaggest\\JsonSchema\\JsonSchema' => __DIR__ . '/..' . '/swaggest/json-schema/src/JsonSchema.php',
+        'Swaggest\\JsonSchema\\MagicMap' => __DIR__ . '/..' . '/swaggest/json-schema/src/MagicMap.php',
+        'Swaggest\\JsonSchema\\MagicMapTrait' => __DIR__ . '/..' . '/swaggest/json-schema/src/MagicMapTrait.php',
+        'Swaggest\\JsonSchema\\Meta\\AbstractMeta' => __DIR__ . '/..' . '/swaggest/json-schema/src/Meta/AbstractMeta.php',
+        'Swaggest\\JsonSchema\\Meta\\MetaHolder' => __DIR__ . '/..' . '/swaggest/json-schema/src/Meta/MetaHolder.php',
+        'Swaggest\\JsonSchema\\NameMirror' => __DIR__ . '/..' . '/swaggest/json-schema/src/NameMirror.php',
+        'Swaggest\\JsonSchema\\Path\\PointerUtil' => __DIR__ . '/..' . '/swaggest/json-schema/src/Path/PointerUtil.php',
+        'Swaggest\\JsonSchema\\RefResolver' => __DIR__ . '/..' . '/swaggest/json-schema/src/RefResolver.php',
+        'Swaggest\\JsonSchema\\RemoteRefProvider' => __DIR__ . '/..' . '/swaggest/json-schema/src/RemoteRefProvider.php',
+        'Swaggest\\JsonSchema\\RemoteRef\\BasicFetcher' => __DIR__ . '/..' . '/swaggest/json-schema/src/RemoteRef/BasicFetcher.php',
+        'Swaggest\\JsonSchema\\RemoteRef\\Preloaded' => __DIR__ . '/..' . '/swaggest/json-schema/src/RemoteRef/Preloaded.php',
+        'Swaggest\\JsonSchema\\Schema' => __DIR__ . '/..' . '/swaggest/json-schema/src/Schema.php',
+        'Swaggest\\JsonSchema\\SchemaContract' => __DIR__ . '/..' . '/swaggest/json-schema/src/SchemaContract.php',
+        'Swaggest\\JsonSchema\\SchemaExporter' => __DIR__ . '/..' . '/swaggest/json-schema/src/SchemaExporter.php',
+        'Swaggest\\JsonSchema\\Structure\\ClassStructure' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ClassStructure.php',
+        'Swaggest\\JsonSchema\\Structure\\ClassStructureContract' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ClassStructureContract.php',
+        'Swaggest\\JsonSchema\\Structure\\ClassStructureTrait' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ClassStructureTrait.php',
+        'Swaggest\\JsonSchema\\Structure\\Composition' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/Composition.php',
+        'Swaggest\\JsonSchema\\Structure\\Egg' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/Egg.php',
+        'Swaggest\\JsonSchema\\Structure\\Nested' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/Nested.php',
+        'Swaggest\\JsonSchema\\Structure\\ObjectItem' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ObjectItem.php',
+        'Swaggest\\JsonSchema\\Structure\\ObjectItemContract' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ObjectItemContract.php',
+        'Swaggest\\JsonSchema\\Structure\\ObjectItemTrait' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/ObjectItemTrait.php',
+        'Swaggest\\JsonSchema\\Structure\\WithResolvedValue' => __DIR__ . '/..' . '/swaggest/json-schema/src/Structure/WithResolvedValue.php',
+        'Swaggest\\JsonSchema\\Wrapper' => __DIR__ . '/..' . '/swaggest/json-schema/src/Wrapper.php',
+        'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',

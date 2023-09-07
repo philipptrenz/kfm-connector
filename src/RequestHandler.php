@@ -240,6 +240,6 @@ final class RequestHandler {
                 'message' => 'Service unavailable'
             ]);
         }
-        return Response::json((new Status)->getStatus());
+        return Response::json((new KirbyStatus)->getStatus());
     }
 }

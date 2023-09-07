@@ -23,7 +23,7 @@ final class JwtCertificateTest extends TestCase {
     }
 
     public function testJwtIssuing() : void
-    {
+    {        
         // Server side part
         $cert = new JwtCertificate();
         $jwt = $cert->issueJWT($this->issuer, $this->audience);
