@@ -2,9 +2,10 @@
 use Kirby\Cms\App;
 use Kirby\Cache\Cache;
 use Kirby\Http\Request;
+use PhilippTrenz\KFMConnector\JwksException;
 use PHPUnit\Framework\TestCase;
 use PhilippTrenz\KFMConnector\RequestHandler;
-use PhilippTrenz\KFMConnector\JWTCertificate;
+use PhilippTrenz\KFMConnector\JwtCertificate;
 
 final class RequestHandlerTest extends TestCase {
 
@@ -70,10 +71,10 @@ final class RequestHandlerTest extends TestCase {
     private function setupJWTAuthorization(string $issuer, $audience, $jwtValidInMinutes, $jwtValidForMinutes, int $certBits=4096): string
     {
         // Create RSA certificate for JWTs
-        $cert = new JWTCertificate($certBits);
+        $cert = new JwtCertificate($certBits);
         
         // Populate cache with jwks
-        $this->cache->set(RequestHandler::$JWKS_CACHE_KEY, JWTCertificate::toJWKS($cert), 1);
+        $this->cache->set(RequestHandler::$JWKS_CACHE_KEY, JwtCertificate::toJWKS($cert), 1);
 
         // Create JWT
         $jwt = $cert->issueJWT($issuer, $audience, $jwtValidInMinutes, $jwtValidForMinutes);
@@ -221,4 +222,41 @@ final class RequestHandlerTest extends TestCase {
         $this->assertFalse($h->isAuthorized(new Request));
     }
 
+    public function testEmptyJwks() : void 
+    {
+        $this->expectException(JwksException::class);
+
+        $this->cache->set(RequestHandler::$JWKS_CACHE_KEY, [
+            'keys' => []
+        ], 1);
+
+        $jwt = (new JwtCertificate)->issueJWT($this->issuer, $this->audience);
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+			]
+		]);
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
+        $this->assertFalse($h->isAuthorized(new Request));
+    }
+
+    public function testInvalidJwks() : void 
+    {
+        $this->expectException(JwksException::class);
+
+        $this->cache->set(RequestHandler::$JWKS_CACHE_KEY, [
+            'not-keys' => []
+        ], 1);
+
+        $jwt = (new JwtCertificate)->issueJWT($this->issuer, $this->audience);
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+			]
+		]);
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
+        $this->assertFalse($h->isAuthorized(new Request));
+    }
 }

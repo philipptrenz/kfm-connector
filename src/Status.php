@@ -7,8 +7,8 @@ use Kirby\Cms\App;
 final class Status {
 
     private App $kirby;
-    public function __construct() {
-        $this->kirby = App::instance();
+    public function __construct(App $kirby=null) {
+        $this->kirby = $kirby ?? App::instance();
     }
 
     private function getPlugins($system, $exceptions): array
