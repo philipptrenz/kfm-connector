@@ -11,7 +11,7 @@ Download and copy this repository to `/site/plugins/kfm-connector`.
 ### Git submodule
 
 ```
-git submodule add philipptrenz/kirby-fleet-manager-connector.git site/plugins/kirby-fleet-manager-connector
+git submodule add philipptrenz/kirby-fleet-manager-connector.git site/plugins/kfm-connector
 ```
 
 ### Composer
@@ -28,7 +28,6 @@ Add the base url to your Kirby Fleet Manager instance as issuer to `site/config/
 <?php
 
 return [
-
     # ...
 
     'philipptrenz.kirby-fleet-manager-connector' => [
