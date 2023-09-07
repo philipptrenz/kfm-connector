@@ -17,7 +17,7 @@ git submodule add philipptrenz/kirby-fleet-manager-connector.git site/plugins/kf
 ### Composer
 
 ```
-composer require philipptrenz/kirby-fleet-manager-connector
+composer require philipptrenz/kfm-connector
 ```
 
 ## Setup
@@ -30,7 +30,7 @@ Add the base url to your Kirby Fleet Manager instance as issuer to `site/config/
 return [
     # ...
 
-    'philipptrenz.kirby-fleet-manager-connector' => [
+    'philipptrenz.kfm-connector' => [
         'issuer' => 'https://my-kirby-fleet-manager-instance.com',
     ],
 

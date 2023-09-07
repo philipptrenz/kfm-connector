@@ -19,10 +19,10 @@ final class RequestHandlerTest extends TestCase {
     {        
         $this->kirby = kirby();
 
-        $this->cache         = $this->kirby->cache('philipptrenz.kirby-fleet-manager-connector');
+        $this->cache         = $this->kirby->cache('philipptrenz.kfm-connector');
         $this->audience      = $this->kirby->site()->url();
-        $this->issuer        = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer', null);
-        $this->cacheDuration = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.jwksCacheDuration', null);
+        $this->issuer        = $this->kirby->option('philipptrenz.kfm-connector.issuer', null);
+        $this->cacheDuration = $this->kirby->option('philipptrenz.kfm-connector.jwksCacheDuration', null);
 
         $this->cache->flush();
     }

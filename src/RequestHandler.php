@@ -219,10 +219,10 @@ final class RequestHandler {
     public static function process(): Response 
     {
         $kirby         = App::instance();
-        $cache         = $kirby->cache('philipptrenz.kirby-fleet-manager-connector');
+        $cache         = $kirby->cache('philipptrenz.kfm-connector');
         $audience      = $kirby->site()->url();
-        $issuer        = $kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer', null);
-        $cacheDuration = $kirby->option('philipptrenz.kirby-fleet-manager-connector.jwksCacheDuration', null);
+        $issuer        = $kirby->option('philipptrenz.kfm-connector.issuer', null);
+        $cacheDuration = $kirby->option('philipptrenz.kfm-connector.jwksCacheDuration', null);
 
         $request = $kirby->request();
         

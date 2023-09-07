@@ -2,7 +2,7 @@
 
     'url' => 'https://my-kirby-instance',
 
-    'philipptrenz.kirby-fleet-manager-connector' => [
+    'philipptrenz.kfm-connector' => [
         'issuer' => 'https://my-kfm-instance',
         'jwksCacheDuration' => 60*24,
     ],

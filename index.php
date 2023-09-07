@@ -6,7 +6,7 @@ use Kirby\Cms\App;
 use PhilippTrenz\KFMConnector\RequestHandler;
 
 
-App::plugin('philipptrenz/kirby-fleet-manager-connector', [
+App::plugin('philipptrenz/kfm-connector', [
 
     'options' => [
         'cache' => true

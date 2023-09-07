@@ -1,5 +1,5 @@
 {
-	"name": "philipptrenz/kirby-fleet-manager-connector",
+	"name": "philipptrenz/kfm-connector",
 	"description": "Keep track of all your Kirby websites within a single tool.",
 	"license": "MIT",
 	"type": "kirby-plugin",

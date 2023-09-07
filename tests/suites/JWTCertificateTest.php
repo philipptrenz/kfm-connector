@@ -19,7 +19,7 @@ final class JwtCertificateTest extends TestCase {
     {        
         $this->kirby    = kirby();
         $this->audience = $this->kirby->site()->url();
-        $this->issuer   = $this->kirby->option('philipptrenz.kirby-fleet-manager-connector.issuer', null);
+        $this->issuer   = $this->kirby->option('philipptrenz.kfm-connector.issuer');
     }
 
     public function testJwtIssuing() : void
