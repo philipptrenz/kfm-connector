@@ -259,4 +259,48 @@ final class RequestHandlerTest extends TestCase {
         $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
         $this->assertFalse($h->isAuthorized(new Request));
     }
+
+    public function testExternalJwksNotReachable() : void
+    {
+        $cert = new JwtCertificate();
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
+
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $cert->issueJWT($this->issuer, $this->audience)
+			]
+		]);
+
+        try {
+            $h->isAuthorized(new Request);
+            $this->assertTrue(false);
+        } catch (JwksException $e) {
+            $this->assertStringContainsString("Couldn't connect to server", $e->getMessage());
+        }
+    }
+
+    public function testJwksRequestMock() : void
+    {
+        $cert = new JwtCertificate();
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
+
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $cert->issueJWT($this->issuer, $this->audience)
+            ],
+            'options' => [
+                'remote' => [
+                    'test' => true,
+                ]
+            ]
+		]);
+
+        try {
+            $h->isAuthorized(new Request);
+            $this->assertTrue(false);
+        } catch(JwksException $e) {
+            $this->assertStringContainsString("JWKS endpoint returned null", $e->getMessage());
+        }
+    }
+
 }
