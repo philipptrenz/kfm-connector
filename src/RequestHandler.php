@@ -153,10 +153,10 @@ final class RequestHandler {
      */
     private function getKeySet() : array
     {
-        $jwks = $this->cache->get(self::$JWKS_CACHE_KEY);
+        $jwks = $this->cache->get(self::$JWKS_CACHE_KEY, null);
 
         // If cache is empty
-        if ($jwks === null ) {
+        if ($jwks === null) {
             try {
                 $response = Remote::get($this->jwksUrl, [
                     'headers' => ['Content-Type' => 'application/json']
@@ -169,9 +169,10 @@ final class RequestHandler {
                 throw new JwksException("JWKS endpoint returned null");
 
             // Update cache with fetched JSON web key set
+            $jwks = $response->json();
             $this->cache->set(
                 self::$JWKS_CACHE_KEY,
-                $response->json(),
+                $jwks,
                 $this->jwksCacheDuration
             );
         }
