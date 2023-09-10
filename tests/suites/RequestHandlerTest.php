@@ -365,4 +365,28 @@ final class RequestHandlerTest extends TestCase {
         }
     }
 
+    public function testIsAllowedIpWhitelistSingleIp() : void
+    {
+        $this->kirby = new App([
+            'options' => [
+                'philipptrenz.kfm-connector' => [
+                    'ip_whitelist' => '172.0.0.2'
+                ]
+            ]
+		]);
+        $ipWhitelist = $this->kirby->option('philipptrenz.kfm-connector.ip_whitelist');
+        $this->assertEquals($ipWhitelist, '172.0.0.2');
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, null, $ipWhitelist);
+
+        $this->assertTrue($h->isAllowedIp('172.0.0.2'));
+
+        foreach([
+            '127.0.0.1',
+            '2001:db8:3c4d:15::1a2f:1a2c',
+        ] as $ip) {
+            $this->assertFalse($h->isAllowedIp($ip));
+        }
+    }
+
 }
