@@ -10,6 +10,7 @@ use Firebase\JWT\JWT;
 use Kirby\Cache\Cache;
 use Kirby\Http\Remote;
 use Kirby\Http\Request;
+use Kirby\Http\Visitor;
 use Kirby\Http\Response;
 use InvalidArgumentException;
 use UnexpectedValueException;
@@ -62,18 +63,29 @@ final class RequestHandler {
     private int $jwksCacheDuration;
 
     /**
+     * List of IPs which are allowed to request data;
+     * if is not null, all requests from other IPs get denied
+     * @var array|null
+     * @author Philipp Trenz
+     */
+    private array|null $ipWhitelist;
+
+    /**
      * Constructor
      * @param \Kirby\Cache\Cache $cache
      * @param string $audience
      * @param string $issuer
      * @param int|null $jwksCacheDuration
      */
-    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null) {
+    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null, string|array $ipWhitelist=null) {
         $this->cache             = $cache;
         $this->audience          = $audience;
         $this->issuer            = $issuer;
         $this->jwksUrl           = rtrim($this->issuer, '/') . '/api/jwks';
         $this->jwksCacheDuration = $jwksCacheDuration ?? 60*24*3;  // fallback: 3 days
+
+        if (is_string($ipWhitelist)) $this->ipWhitelist = [$ipWhitelist];
+        else $this->ipWhitelist = $ipWhitelist;
     }
 
     /**
@@ -110,6 +122,12 @@ final class RequestHandler {
     public function getJwksCacheDuration() : int
     {
         return $this->jwksCacheDuration;
+    }
+
+    public function isAllowedIp(string $ip) : bool
+    {
+        return $this->ipWhitelist === null ||
+               in_array($ip, $this->ipWhitelist) === true;
     }
 
     /**
@@ -250,9 +268,12 @@ final class RequestHandler {
      * @param bool $autoRefreshJwksCache
      * @return bool
      */
-    public function isAuthorized(Request $request, bool $autoRefreshJwksCache=true): bool
+    public function isAuthorized(Request $request, Visitor $visitor, bool $autoRefreshJwksCache=true): bool
     {
-        if ($authHeader = $request->header('Authorization')) {
+        if (
+            $this->isAllowedIp($visitor->ip()) &&
+            $authHeader = $request->header('Authorization')
+        ) {
             $jwt = str_replace('Bearer ', '', $authHeader);
             return $this->isJWTValid($jwt, !$autoRefreshJwksCache) === true;
         }
@@ -270,13 +291,15 @@ final class RequestHandler {
         $cache         = $kirby->cache('philipptrenz.kfm-connector');
         $audience      = $kirby->site()->url();
         $issuer        = $kirby->option('philipptrenz.kfm-connector.issuer', null);
-        $cacheDuration = $kirby->option('philipptrenz.kfm-connector.jwksCacheDuration', null);
+        $cacheDuration = $kirby->option('philipptrenz.kfm-connector.jwks_cache_duration', null);
+        $ipWhitelist   = $kirby->option('philipptrenz.kfm-connector.ip_whitelist', null);
 
         $request = $kirby->request();
+        $visitor = $kirby->visitor();
         
-        $handler = new RequestHandler($cache, $audience, $issuer, $cacheDuration);
+        $handler = new RequestHandler($cache, $audience, $issuer, $cacheDuration, $ipWhitelist);
         try {
-            if ($issuer === null || $handler->isAuthorized($request) !== true) {
+            if ($issuer === null || $handler->isAuthorized($request, $visitor) !== true) {
                 return new Response([
                     'code' => 401,
                     'message' => 'Not authorized'

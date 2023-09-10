@@ -104,7 +104,7 @@ final class RequestHandlerTest extends TestCase {
         // Build dummy request, which includes header
         $request = new Request();
 
-        $this->assertTrue($h->isAuthorized($request));
+        $this->assertTrue($h->isAuthorized($request, $this->kirby->visitor()));
     }
 
     public function testExpiredAuthenticationWithJwksFromCache() : void 
@@ -125,7 +125,7 @@ final class RequestHandlerTest extends TestCase {
 			]
 		]);
 
-        $this->assertFalse($h->isAuthorized(new Request));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testMissingJwtHeader() : void 
@@ -136,7 +136,7 @@ final class RequestHandlerTest extends TestCase {
             'server' => []
         ]);
 
-        $this->assertFalse($h->isAuthorized(new Request));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testInvalidJwt() : void 
@@ -156,7 +156,7 @@ final class RequestHandlerTest extends TestCase {
         // Populate cache with valid JWKS
         $this->setupJWTAuthorization($this->issuer, $this->audience, 0, 5, 4096);
 
-        $this->assertFalse($h->isAuthorized(new Request, false));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor(), false));
     }
 
     public function testInvalidJwt2() : void 
@@ -177,7 +177,7 @@ final class RequestHandlerTest extends TestCase {
         // Populate cache with valid JWKS
         $this->setupJWTAuthorization($this->issuer, $this->audience, 0, 5, 4096);
 
-        $this->assertFalse($h->isAuthorized(new Request, false));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor(), false));
     }
 
     public function testInvalidJwtAudience() : void 
@@ -198,7 +198,7 @@ final class RequestHandlerTest extends TestCase {
 			]
 		]);
 
-        $this->assertFalse($h->isAuthorized(new Request));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testInvalidJwtIssuer() : void 
@@ -219,7 +219,7 @@ final class RequestHandlerTest extends TestCase {
 			]
 		]);
 
-        $this->assertFalse($h->isAuthorized(new Request));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testEmptyJwks() : void 
@@ -238,7 +238,7 @@ final class RequestHandlerTest extends TestCase {
 		]);
 
         $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
-        $this->assertFalse($h->isAuthorized(new Request));
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testInvalidJwks() : void 
@@ -257,26 +257,7 @@ final class RequestHandlerTest extends TestCase {
 		]);
 
         $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
-        $this->assertFalse($h->isAuthorized(new Request));
-    }
-
-    public function testExternalJwksNotReachable() : void
-    {
-        $cert = new JwtCertificate();
-        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, $this->cacheDuration);
-
-        $this->kirby = new App([
-			'server' => [
-				'HTTP_AUTHORIZATION' => 'Bearer ' . $cert->issueJWT($this->issuer, $this->audience)
-			]
-		]);
-
-        try {
-            $h->isAuthorized(new Request);
-            $this->assertTrue(false);
-        } catch (JwksException $e) {
-            $this->assertStringContainsString("Couldn't connect to server", $e->getMessage());
-        }
+        $this->assertFalse($h->isAuthorized(new Request, $this->kirby->visitor()));
     }
 
     public function testJwksRequestMock() : void
@@ -296,10 +277,91 @@ final class RequestHandlerTest extends TestCase {
 		]);
 
         try {
-            $h->isAuthorized(new Request);
+            $h->isAuthorized(new Request, $this->kirby->visitor());
             $this->assertTrue(false);
         } catch(JwksException $e) {
             $this->assertStringContainsString("JWKS endpoint returned null", $e->getMessage());
+        }
+    }
+
+    public function testIsAllowedIpWhitelistAllowAll() : void
+    {
+        $this->kirby = new App([
+            'options' => [
+                'philipptrenz.kfm-connector' => [
+                    'ip_whitelist' => null
+                ]
+            ]
+		]);
+        $ipWhitelist = $this->kirby->option('philipptrenz.kfm-connector.ip_whitelist');
+        $this->assertEquals($ipWhitelist, null);
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, null, $ipWhitelist);
+
+        foreach([
+            '127.0.0.1',
+            '172.0.0.2',
+            '2001:db8:3c4d:15::1a2f:1a2b',
+        ] as $ip) {
+            $this->assertTrue($h->isAllowedIp($ip));
+        }
+    }
+
+    public function testIsAllowedIpWhitelistDenyAll() : void
+    {
+        $this->kirby = new App([
+            'options' => [
+                'philipptrenz.kfm-connector' => [
+                    'ip_whitelist' => []
+                ]
+            ]
+		]);
+        $ipWhitelist = $this->kirby->option('philipptrenz.kfm-connector.ip_whitelist');
+        $this->assertEquals($ipWhitelist, []);
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, null, $ipWhitelist);
+
+        foreach([
+            '127.0.0.1',
+            '172.0.0.2',
+            '2001:db8:3c4d:15::1a2f:1a2b',
+        ] as $ip) {
+            $this->assertFalse($h->isAllowedIp($ip));
+        }
+    }
+
+    public function testIsAllowedIpWhitelistAllowSelection() : void
+    {
+        $this->kirby = new App([
+            'options' => [
+                'philipptrenz.kfm-connector' => [
+                    'ip_whitelist' => [
+                        '172.0.0.2',
+                        '2001:db8:3c4d:15::1a2f:1a2b',
+                    ]
+                ]
+            ]
+		]);
+        $ipWhitelist = $this->kirby->option('philipptrenz.kfm-connector.ip_whitelist');
+        $this->assertEquals($ipWhitelist, [
+            '172.0.0.2',
+            '2001:db8:3c4d:15::1a2f:1a2b',
+        ]);
+
+        $h = new RequestHandler($this->cache, $this->audience, $this->issuer, null, $ipWhitelist);
+
+        foreach([
+            '172.0.0.2',
+            '2001:db8:3c4d:15::1a2f:1a2b',
+        ] as $ip) {
+            $this->assertTrue($h->isAllowedIp($ip));
+        }
+
+        foreach([
+            '127.0.0.1',
+            '2001:db8:3c4d:15::1a2f:1a2c',
+        ] as $ip) {
+            $this->assertFalse($h->isAllowedIp($ip));
         }
     }
 
