@@ -289,7 +289,7 @@ final class RequestHandler {
     {
         $kirby         = App::instance();
         $cache         = $kirby->cache('philipptrenz.kfm-connector');
-        $audience      = $kirby->site()->url();
+        $audience      = $kirby->url();
         $issuer        = $kirby->option('philipptrenz.kfm-connector.issuer', null);
         $cacheDuration = $kirby->option('philipptrenz.kfm-connector.jwks_cache_duration', null);
         $ipWhitelist   = $kirby->option('philipptrenz.kfm-connector.ip_whitelist', null);
