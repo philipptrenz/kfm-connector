@@ -122,8 +122,8 @@ class JwtCertificate
     public function issueJWT(string $issuer, string $audience, int $validInMinutes=0, int $validForMinutes=20) : string
     {
         return $this->encodeJWT([
-            'iss' => $issuer,
-            'aud' => $audience,
+            'iss' => rtrim($issuer, '/'),
+            'aud' => rtrim($audience, '/'),
             'iat' => time(),                                                    // time of issuing
             'nbf' => time() + (60 * $validInMinutes),                           // valid from
             'exp' => time() + (60 * ($validInMinutes + $validForMinutes)),      // valid to

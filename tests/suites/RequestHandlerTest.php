@@ -389,4 +389,114 @@ final class RequestHandlerTest extends TestCase {
         }
     }
 
+    public function testIssuerWithTrailingSlash1() : void
+    {
+        $jwt = $this->setupJWTAuthorization(
+            'http://localhost:8000/',
+            $this->audience,
+            0,
+            5,
+            4096
+        );
+        
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+            ],
+		]);
+
+        $h = new RequestHandler($this->cache, $this->audience, 'http://localhost:8000/', $this->cacheDuration);
+        $this->assertTrue(
+            $h->isAuthorized(new Request, $this->kirby->visitor())
+        );
+
+        $h2 = new RequestHandler($this->cache, $this->audience, 'http://localhost:8000', $this->cacheDuration);
+        $this->assertTrue(
+            $h2->isAuthorized(new Request, $this->kirby->visitor())
+        );
+    }
+
+    public function testIssuerWithTrailingSlash2() : void
+    {
+        $jwt = $this->setupJWTAuthorization(
+            'http://localhost:8000',
+            $this->audience,
+            0,
+            5,
+            4096
+        );
+        
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+            ],
+		]);
+
+        $h = new RequestHandler($this->cache, $this->audience, 'http://localhost:8000/', $this->cacheDuration);
+        $this->assertTrue(
+            $h->isAuthorized(new Request, $this->kirby->visitor())
+        );
+
+        $h2 = new RequestHandler($this->cache, $this->audience, 'http://localhost:8000', $this->cacheDuration);
+        $this->assertTrue(
+            $h2->isAuthorized(new Request, $this->kirby->visitor())
+        );
+    }
+
+    public function testAudienceWithTrailingSlash1() : void
+    {
+        $jwt = $this->setupJWTAuthorization(
+            $this->issuer,
+            'http://localhost:9000/',
+            0,
+            5,
+            4096
+        );
+        
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+            ],
+		]);
+
+        $h = new RequestHandler($this->cache, 'http://localhost:9000/', $this->issuer, $this->cacheDuration);
+        $this->assertTrue(
+            $h->isAuthorized(new Request, $this->kirby->visitor())
+        );
+
+        $h2 = new RequestHandler($this->cache, 'http://localhost:9000', $this->issuer, $this->cacheDuration);
+        $this->assertTrue(
+            $h2->isAuthorized(new Request, $this->kirby->visitor())
+        );
+    }
+
+    public function testAudienceWithTrailingSlash2() : void
+    {
+        $jwt = $this->setupJWTAuthorization(
+            $this->issuer,
+            'http://localhost:9000',
+            0,
+            5,
+            4096
+        );
+        
+        $this->kirby = new App([
+			'server' => [
+				'HTTP_AUTHORIZATION' => 'Bearer ' . $jwt
+            ],
+		]);
+
+        $h = new RequestHandler($this->cache, 'http://localhost:9000/', $this->issuer, $this->cacheDuration);
+        $this->assertTrue(
+            $h->isAuthorized(new Request, $this->kirby->visitor())
+        );
+
+        $h2 = new RequestHandler($this->cache, 'http://localhost:9000', $this->issuer, $this->cacheDuration);
+        $this->assertTrue(
+            $h2->isAuthorized(new Request, $this->kirby->visitor())
+        );
+    }
+
+    
+
 }

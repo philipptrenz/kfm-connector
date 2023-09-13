@@ -32,7 +32,7 @@ return [
     # ...
 
     'philipptrenz.kfm-connector' => [
-        'issuer' => 'https://my-kirby-fleet-manager-instance.com',#
+        'issuer' => 'https://my-kirby-fleet-manager-instance.com',
 
         'jwks_cache_duration' => 4320,  // OPTIONAL; in minutes, defaults to 3 days
         'ip_whitelist' => [             // OPTIONAL; limits access to listed IPs, if set
