@@ -11,8 +11,9 @@ Download and copy this repository to `/site/plugins/kfm-connector`.
 ### Git submodule
 
 ```
-git submodule add philipptrenz/kfm-connector.git site/plugins/kfm-connector
+git submodule add https://github.com/philipptrenz/kfm-connector.git site/plugins/kfm-connector
 ```
+
 
 ### Composer
 
