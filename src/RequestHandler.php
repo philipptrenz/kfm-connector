@@ -257,8 +257,8 @@ final class RequestHandler {
             return false;
         }
 
-        return $payload->iss === $this->issuer &&
-               $payload->aud === $this->audience;
+        return rtrim($payload->iss, '/') === $this->issuer &&
+               rtrim($payload->aud, '/') === $this->audience;
     }
 
     /**
