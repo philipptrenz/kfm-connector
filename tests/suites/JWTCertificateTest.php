@@ -120,4 +120,19 @@ final class JwtCertificateTest extends TestCase {
         $keyset = JWK::parseKeySet($jwks);
         JWT::decode($jwt, $keyset);
     }
+
+    public function testJwtTrailingSlash() : void
+    {        
+        // Server side part
+        $cert = new JwtCertificate();
+        $jwt = $cert->issueJWT('https://localhost:8000/', 'https://localhost:9000/');
+        $jwks = JwtCertificate::toJWKS($cert);
+
+        // Client part
+        $keyset = JWK::parseKeySet($jwks);
+        $payload = JWT::decode($jwt, $keyset);
+
+        $this->assertEquals($payload->iss, 'https://localhost:8000');
+        $this->assertEquals($payload->aud, 'https://localhost:9000');
+    }
 }

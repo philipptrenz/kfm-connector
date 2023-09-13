@@ -77,10 +77,10 @@ final class RequestHandler {
      * @param string $issuer
      * @param int|null $jwksCacheDuration
      */
-    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null, string|array $ipWhitelist=null) {
+    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null, string|array|null $ipWhitelist=null) {
         $this->cache             = $cache;
-        $this->audience          = $audience;
-        $this->issuer            = $issuer;
+        $this->audience          = rtrim($audience, '/');
+        $this->issuer            = rtrim($issuer, '/');
         $this->jwksUrl           = rtrim($this->issuer, '/') . '/api/jwks';
         $this->jwksCacheDuration = $jwksCacheDuration ?? 60*24*3;  // fallback: 3 days
 
