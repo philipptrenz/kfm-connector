@@ -32,6 +32,7 @@ JWT::$leeway = 60;  // in seconds
 final class RequestHandler {
 
     public static string $JWKS_CACHE_KEY = 'jwks';
+    public static string $RATE_LIMIT_CACHE_KEY = 'rateLimit';
 
     private Cache $cache;
 
@@ -63,6 +64,18 @@ final class RequestHandler {
     private int $jwksCacheDuration;
 
     /**
+     * Is rate limit enabled
+     * @var bool
+     */
+    private bool $rateLimit;
+
+    /**
+     * Number of maximum JWKS API calls per minute
+     * @var int
+     */
+    private int $maxCallsPerMinute = 10;
+
+    /**
      * List of IPs which are allowed to request data;
      * if is not null, all requests from other IPs get denied
      * @var array|null
@@ -77,7 +90,15 @@ final class RequestHandler {
      * @param string $issuer
      * @param int|null $jwksCacheDuration
      */
-    public function __construct(Cache $cache, string $audience, string $issuer, int|null $jwksCacheDuration=null, string|array|null $ipWhitelist=null) {
+    public function __construct(
+        Cache $cache,
+        string $audience,
+        string $issuer,
+        int|null $jwksCacheDuration=null,
+        string|array|null $ipWhitelist=null,
+        bool $rateLimit=true
+    ) {
+
         $this->cache             = $cache;
         $this->audience          = rtrim($audience, '/');
         $this->issuer            = rtrim($issuer, '/');
@@ -86,6 +107,8 @@ final class RequestHandler {
 
         if (is_string($ipWhitelist)) $this->ipWhitelist = [$ipWhitelist];
         else $this->ipWhitelist = $ipWhitelist;
+
+        $this->rateLimit = $rateLimit;
     }
 
     /**
@@ -199,14 +222,30 @@ final class RequestHandler {
     }
 
     /**
-     * Checks if key id is in Keys array
-     * @param string $kid
-     * @param \Firebase\JWT\Key[] $keySet
+     * Validates if rate limit of JWKS API requests is exceeded
      * @return bool
      */
-    private function hasKey(string $kid, array $keySet) : bool
+    private function rateLimitExceeded(): bool
     {
-        return array_key_exists($kid, $keySet);
+        if ($this->rateLimit === false) {
+            return false;
+        }
+
+        $callsPerMinute = $this->cache->getOrSet(
+            self::$RATE_LIMIT_CACHE_KEY,
+            fn() => 0,      // # of calls
+            time() + 60     // expires in one minute
+        );
+
+        $expiresAt = $this->cache->expires(self::$RATE_LIMIT_CACHE_KEY);
+
+        if (++$callsPerMinute > $this->maxCallsPerMinute) {
+            return true;
+        }
+
+        $this->cache->set(self::$RATE_LIMIT_CACHE_KEY, $callsPerMinute, $expiresAt);
+
+        return false;
     }
 
     /**
@@ -249,7 +288,11 @@ final class RequestHandler {
             // provided key id in key/key-array is empty or invalid.
 
             // if key id is missing in JWKS, the cached JWKS might be outdated
-            if ($payload !== null && $isRetry === false && $this->hasKey($payload->kid, $keySet) === false) {
+            if (
+                $isRetry === false &&
+                $e->getMessage() === '"kid" invalid, unable to lookup correct key' &&
+                $this->rateLimitExceeded() === false
+            ) {
                 // Invalidate JWKS cache and retry
                 $this->invalidateJwksCache();
                 return $this->isJWTValid($jwt, true);
