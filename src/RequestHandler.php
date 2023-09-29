@@ -101,7 +101,11 @@ final class RequestHandler {
 
         $this->cache             = $cache;
         $this->audience          = rtrim($audience, '/');
-        $this->issuer            = rtrim($issuer, '/');
+
+        // Ensure, that issuer claim does not include a port definiton
+        $issuerParts  = parse_url($issuer);
+        $this->issuer = $issuerParts['scheme'] . '://' . $issuerParts['host'];
+
         $this->jwksUrl           = rtrim($this->issuer, '/') . '/api/jwks';
         $this->jwksCacheDuration = $jwksCacheDuration ?? 60*24*3;  // fallback: 3 days
 
