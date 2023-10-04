@@ -2,10 +2,7 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-
+The supported version is always the [latest release](https://github.com/philipptrenz/kfm-connector/releases/latest).
 
 ## Reporting a Vulnerability
 
