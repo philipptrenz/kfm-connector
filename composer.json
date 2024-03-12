@@ -4,6 +4,7 @@
 	"license": "MIT",
 	"type": "kirby-plugin",
 	"version": "1.2.3",
+	"homepage": "https://kirbyfleetmanager.com/",
 	"authors": [
 		{
 			"name": "Philipp Trenz",
